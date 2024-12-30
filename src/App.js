@@ -1,7 +1,7 @@
 import { db } from "./firebaseConnection";
 import './app.css'
 import { useState } from "react";
-import { doc, setDoc, collection, addDoc } from "firebase/firestore";
+import { doc, setDoc, collection, addDoc, getDoc} from "firebase/firestore";
 
 function App() {
   const [titulo, setTitulo] = useState('');
@@ -33,6 +33,19 @@ function App() {
     })
   }
 
+
+  async function handleSearch() {
+    const postRef = doc(db, "posts", "12345");
+    await getDoc(postRef)
+    .then((snapshot) => {
+      setAutor(snapshot.data().autor);
+      setTitulo(snapshot.data().titulo)
+    })
+    .catch((error) => {
+      console.log("Gerou erro " + error)
+    })
+  }
+
   return (
     <div>
       <div className="container">
@@ -45,6 +58,7 @@ function App() {
         <input type="text" placeholder="Autor do post" value={autor} onChange={(e) => setAutor(e.target.value)}/>
 
         <button onClick={handleAdd}>Cadastrar</button>
+        <button onClick={handleSearch}>Buscar post</button>
       </div>
     </div>
   );
