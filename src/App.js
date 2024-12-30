@@ -1,4 +1,5 @@
 import { db } from "./firebaseConnection";
+import './app.css'
 
 function App() {
 
@@ -8,9 +9,9 @@ function App() {
 
   return (
     <div>
-      <h1>React Js + Firebase</h1>
 
       <div className="container">
+        <h1>React Js + Firebase</h1>
         <label>Titulo: </label>
         <textarea type="text" placeholder="Digite o titulo"/>
 
