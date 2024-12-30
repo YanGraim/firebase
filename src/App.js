@@ -1,13 +1,23 @@
 import { db } from "./firebaseConnection";
 import './app.css'
 import { useState } from "react";
+import { doc, setDoc } from "firebase/firestore";
 
 function App() {
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
 
-  function handleAdd() {
-    alert("Teste")
+  async function handleAdd() {
+    await setDoc(doc(db, "posts", "12345"), {
+      titulo: titulo,
+      autor: autor,
+    })
+    .then(() => {
+      console.log("Dados registrados no banco!")
+    })
+    .catch((error) => {
+      console.log("Gerou erro " + error)
+    })
   }
 
   return (
