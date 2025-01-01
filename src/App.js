@@ -6,6 +6,8 @@ import { doc, setDoc, collection, addDoc, getDoc, getDocs} from "firebase/firest
 function App() {
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
+  const [idPost, setIdPost] = useState('');
+ 
   const [posts, setPosts] = useState([]);
 
   async function handleAdd() {
@@ -62,10 +64,18 @@ function App() {
 
   }
 
+  function handleEdit() {
+    alert("Editando")
+  }
+
   return (
     <div>
       <div className="container">
         <h1>React Js + Firebase</h1>
+
+      <label>Id Post:</label>
+      <input type="text" placeholder="Digite o Id do post" value={idPost} onChange={((e) => setIdPost(e.target.value))}/>
+
         <label>Titulo: </label>
         <textarea type="text" placeholder="Digite o titulo" value={titulo} onChange={(e) => setTitulo(e.target.value)}/>
 
@@ -75,6 +85,7 @@ function App() {
 
         <button onClick={handleAdd}>Cadastrar</button>
         <button onClick={handleSearch}>Buscar post</button>
+        <button onClick={handleEdit}>Editar post</button>
 
         <ul>
           {posts.map((post) => {
