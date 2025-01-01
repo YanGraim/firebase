@@ -1,7 +1,7 @@
 import { db } from "./firebaseConnection";
 import './app.css'
 import { useState } from "react";
-import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc} from "firebase/firestore";
+import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc} from "firebase/firestore";
 
 function App() {
   const [titulo, setTitulo] = useState('');
@@ -81,8 +81,15 @@ function App() {
     })
   }
 
-  function handleDelete(id) {
-    alert(id)
+  async function handleDelete(id) {
+    const docRef = doc(db, "posts", id)
+    await deleteDoc(docRef)
+    .then(() => {
+      alert("Post deletado com sucesso!")
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   return (
