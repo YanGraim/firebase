@@ -1,19 +1,23 @@
-import { db } from "./firebaseConnection";
+import { db, auth } from "./firebaseConnection";
 import './app.css'
-import { useState, useEffect, cloneElement } from "react";
+import { useState, useEffect, use } from "react";
 import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot} from "firebase/firestore";
+
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 function App() {
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
   const [idPost, setIdPost] = useState('');
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
  
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     async function loadPosts() {
-      const unsub = onSnapshot(collection(db, "posts"), (snapshot) => {
-        let listaPosts = [];
+      onSnapshot(collection(db, "posts"), (snapshot) => {
+        let listaPosts = [];            
       snapshot.forEach((doc) => {
         listaPosts.push({
           id: doc.id,
@@ -110,13 +114,41 @@ function App() {
     })
   }
 
+  async function handleUser() {
+    await createUserWithEmailAndPassword(auth, email, senha)
+    .then(() => {
+      console.log("Usuario cadastrado com sucesso")
+      setEmail('');
+      setSenha('');
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
   return (
     <div>
       <div className="container">
         <h1>React Js + Firebase</h1>
 
-      <label>Id Post:</label>
-      <input type="text" placeholder="Digite o Id do post" value={idPost} onChange={((e) => setIdPost(e.target.value))}/>
+        <div>
+        <h2>Cadastrar usuário</h2>
+        <label>Email</label> <br />
+        <input type="text" placeholder="Digite seu email" value={email} onChange={((e) => setEmail(e.target.value))}/> 
+        <br />
+
+        <label>Senha</label>
+         <br />
+        <input type="text" placeholder="Digite sua senha" value={senha} onChange={((e) => setSenha(e.target.value))}/>
+        <br />
+
+        <button onClick={handleUser}>Cadastrar</button>
+
+        <hr />
+        </div>
+        <h2>Posts</h2>
+        <label>Id Post:</label>
+        <input type="text" placeholder="Digite o Id do post" value={idPost} onChange={((e) => setIdPost(e.target.value))}/>
 
         <label>Titulo: </label>
         <textarea type="text" placeholder="Digite o titulo" value={titulo} onChange={(e) => setTitulo(e.target.value)}/>
