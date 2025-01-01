@@ -81,6 +81,10 @@ function App() {
     })
   }
 
+  function handleDelete(id) {
+    alert(id)
+  }
+
   return (
     <div>
       <div className="container">
@@ -106,7 +110,8 @@ function App() {
               <li key={post.id}>
                 <span>Id: <strong>{post.id}</strong></span> <br />
                 <span>Autor: {post.autor}</span> <br />
-                <span>Titulo: {post.titulo}</span> <br /> <br />
+                <span>Titulo: {post.titulo}</span> <br />
+                <button onClick={() => handleDelete(post.id)}>Excluir</button> <br /> <br />
               </li>
             )
           })}
