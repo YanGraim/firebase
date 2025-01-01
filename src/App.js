@@ -1,7 +1,7 @@
 import { db } from "./firebaseConnection";
 import './app.css'
 import { useState } from "react";
-import { doc, setDoc, collection, addDoc, getDoc, getDocs} from "firebase/firestore";
+import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc} from "firebase/firestore";
 
 function App() {
   const [titulo, setTitulo] = useState('');
@@ -64,8 +64,21 @@ function App() {
 
   }
 
-  function handleEdit() {
-    alert("Editando")
+  async function handleEdit() {
+    const docRef = doc(db, "posts", idPost);
+    await updateDoc(docRef, {
+      titulo: titulo,
+      autor: autor
+    })
+    .then(() => {
+      console.log("Post atualizado!");
+      setIdPost('');
+      setAutor('');
+      setTitulo('');
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   return (
@@ -91,6 +104,7 @@ function App() {
           {posts.map((post) => {
             return (
               <li key={post.id}>
+                <span>Id: <strong>{post.id}</strong></span> <br />
                 <span>Autor: {post.autor}</span> <br />
                 <span>Titulo: {post.titulo}</span> <br /> <br />
               </li>
