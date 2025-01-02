@@ -1,7 +1,7 @@
 import { db, auth } from "./firebaseConnection";
 import { useState, useEffect } from "react";
 import { doc, collection, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import './app.css'
 
 function App() {
@@ -154,6 +154,14 @@ function App() {
       console.log(error)
     })
   }
+
+  async function handleLogout() {
+    await signOut(auth)
+    setUser(false);
+    setUserDetail({});
+  }
+
+
   return (
     <div>
       <div className="container">
@@ -162,9 +170,11 @@ function App() {
         { user && (
           <div>
             <strong>Seja bem-vindo(a) (Você está logado!)</strong> <br />
-            <span>ID: {userDetail.uid} - Email: {userDetail.email}</span>
+            <span>ID: {userDetail.uid} - Email: {userDetail.email}</span> <br />
+            <button onClick={handleLogout}>Sair da conta</button>
           </div>
         )}
+
 
         <div className="user">
           <h2>Cadastrar usuário</h2>
