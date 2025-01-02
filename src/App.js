@@ -1,16 +1,19 @@
 import { db, auth } from "./firebaseConnection";
 import { useState, useEffect } from "react";
-import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, collection, addDoc, getDocs, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import './app.css'
 
 function App() {
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
+
   const [idPost, setIdPost] = useState('');
+
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -129,6 +132,18 @@ function App() {
       })
   }
 
+  async function handleLogin() {
+    await signInWithEmailAndPassword(auth, email, senha)
+    .then((value) => {
+      console.log("Usuario logado!");
+      console.log(value.user);
+      setEmail('');
+      setSenha('');
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
   return (
     <div>
       <div className="container">
@@ -146,6 +161,7 @@ function App() {
          
 
           <button onClick={handleUser}>Cadastrar</button>
+          <button onClick={handleLogin}>Login</button>
 
           <hr />
           
