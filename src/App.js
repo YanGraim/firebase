@@ -13,6 +13,8 @@ function App() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
+  const [user, setUser] = useState(false);
+  const [userDetail, setUserDetail] = useState({});
   
   const [posts, setPosts] = useState([]);
 
@@ -137,6 +139,14 @@ function App() {
     .then((value) => {
       console.log("Usuario logado!");
       console.log(value.user);
+
+      setUserDetail({
+        uid: value.user.uid,
+        email: value.user.email,
+      })
+
+      setUser(true);
+
       setEmail('');
       setSenha('');
     })
@@ -148,6 +158,13 @@ function App() {
     <div>
       <div className="container">
         <h1>React Js + Firebase</h1>
+
+        { user && (
+          <div>
+            <strong>Seja bem-vindo(a) (Você está logado!)</strong> <br />
+            <span>ID: {userDetail.uid} - Email: {userDetail.email}</span>
+          </div>
+        )}
 
         <div className="user">
           <h2>Cadastrar usuário</h2>
