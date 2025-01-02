@@ -1,9 +1,8 @@
 import { db, auth } from "./firebaseConnection";
-import './app.css'
-import { useState, useEffect, use } from "react";
-import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot} from "firebase/firestore";
-
+import { useState, useEffect } from "react";
+import { doc, setDoc, collection, addDoc, getDoc, getDocs, updateDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import './app.css'
 
 function App() {
   const [titulo, setTitulo] = useState('');
@@ -11,21 +10,21 @@ function App() {
   const [idPost, setIdPost] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
- 
+
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     async function loadPosts() {
       onSnapshot(collection(db, "posts"), (snapshot) => {
-        let listaPosts = [];            
-      snapshot.forEach((doc) => {
-        listaPosts.push({
-          id: doc.id,
-          autor: doc.data().autor,
-          titulo: doc.data().titulo
+        let listaPosts = [];
+        snapshot.forEach((doc) => {
+          listaPosts.push({
+            id: doc.id,
+            autor: doc.data().autor,
+            titulo: doc.data().titulo
+          })
         })
-      })
-      setPosts(listaPosts);
+        setPosts(listaPosts);
       })
     }
 
@@ -48,14 +47,14 @@ function App() {
       titulo: titulo,
       autor: autor,
     })
-    .then(() => {
-      console.log("Dados registrados no banco!");
-      setAutor('');
-      setTitulo('');
-    })
-    .catch((error) => {
-      console.log("Gerou erro " + error)
-    })
+      .then(() => {
+        console.log("Dados registrados no banco!");
+        setAutor('');
+        setTitulo('');
+      })
+      .catch((error) => {
+        console.log("Gerou erro " + error)
+      })
   }
 
 
@@ -72,17 +71,17 @@ function App() {
 
     const postRef = collection(db, "posts");
     await getDocs(postRef)
-    .then((snapshot) => {
-      let lista = [];
-      snapshot.forEach((doc) => {
-        lista.push({
-          id: doc.id,
-          autor: doc.data().autor,
-          titulo: doc.data().titulo
+      .then((snapshot) => {
+        let lista = [];
+        snapshot.forEach((doc) => {
+          lista.push({
+            id: doc.id,
+            autor: doc.data().autor,
+            titulo: doc.data().titulo
+          })
         })
+        setPosts(lista);
       })
-      setPosts(lista);
-    })
 
   }
 
@@ -92,38 +91,42 @@ function App() {
       titulo: titulo,
       autor: autor
     })
-    .then(() => {
-      console.log("Post atualizado!");
-      setIdPost('');
-      setAutor('');
-      setTitulo('');
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then(() => {
+        console.log("Post atualizado!");
+        setIdPost('');
+        setAutor('');
+        setTitulo('');
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   async function handleDelete(id) {
     const docRef = doc(db, "posts", id)
     await deleteDoc(docRef)
-    .then(() => {
-      alert("Post deletado com sucesso!")
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then(() => {
+        alert("Post deletado com sucesso!")
+      })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   async function handleUser() {
     await createUserWithEmailAndPassword(auth, email, senha)
-    .then(() => {
-      console.log("Usuario cadastrado com sucesso")
-      setEmail('');
-      setSenha('');
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+      .then(() => {
+        console.log("Usuario cadastrado com sucesso")
+        setEmail('');
+        setSenha('');
+      })
+      .catch((error) => {
+        if(error.code === 'auth/weak-password') {
+          alert("Senha muito fraca!");
+        } else if (error.code === 'auth/email-already-in-use') {
+          alert("Email já existe!");
+        }
+      })
   }
 
   return (
@@ -131,31 +134,33 @@ function App() {
       <div className="container">
         <h1>React Js + Firebase</h1>
 
-        <div>
-        <h2>Cadastrar usuário</h2>
-        <label>Email</label> <br />
-        <input type="text" placeholder="Digite seu email" value={email} onChange={((e) => setEmail(e.target.value))}/> 
-        <br />
+        <div className="user">
+          <h2>Cadastrar usuário</h2>
+          <label>Email</label> 
+          <input type="text" placeholder="Digite seu email" value={email} onChange={((e) => setEmail(e.target.value))} />
+     
 
-        <label>Senha</label>
-         <br />
-        <input type="text" placeholder="Digite sua senha" value={senha} onChange={((e) => setSenha(e.target.value))}/>
-        <br />
+          <label>Senha</label>
+          
+          <input type="text" placeholder="Digite sua senha" value={senha} onChange={((e) => setSenha(e.target.value))} />
+         
 
-        <button onClick={handleUser}>Cadastrar</button>
+          <button onClick={handleUser}>Cadastrar</button>
 
-        <hr />
+          <hr />
+          
         </div>
+
         <h2>Posts</h2>
         <label>Id Post:</label>
-        <input type="text" placeholder="Digite o Id do post" value={idPost} onChange={((e) => setIdPost(e.target.value))}/>
+        <input type="text" placeholder="Digite o Id do post" value={idPost} onChange={((e) => setIdPost(e.target.value))} />
 
         <label>Titulo: </label>
-        <textarea type="text" placeholder="Digite o titulo" value={titulo} onChange={(e) => setTitulo(e.target.value)}/>
+        <textarea type="text" placeholder="Digite o titulo" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
 
 
         <label>Autor:</label>
-        <input type="text" placeholder="Autor do post" value={autor} onChange={(e) => setAutor(e.target.value)}/>
+        <input type="text" placeholder="Autor do post" value={autor} onChange={(e) => setAutor(e.target.value)} />
 
         <button onClick={handleAdd}>Cadastrar</button>
         <button onClick={handleSearch}>Buscar post</button>
